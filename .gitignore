@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 .idea/
-=======
->>>>>>> origin/main
 .venv/
 __pycache__/
 *.pyc

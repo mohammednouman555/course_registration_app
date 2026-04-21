@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -14,14 +13,12 @@ templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-# 🔹 Database connection
 def get_db_connection():
     conn = sqlite3.connect("courses.db")
     conn.row_factory = sqlite3.Row
     return conn
 
 
-# 🔹 Home Page (Form)
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     conn = get_db_connection()
@@ -37,34 +34,21 @@ def home(request: Request):
     })
 
 
-# 🔹 Register Student
 @app.post("/register", response_class=HTMLResponse)
 def register(request: Request, student_id: int = Form(...), course_id: int = Form(...)):
     conn = get_db_connection()
 
-    # ✅ Validation: Check student
     student = conn.execute("SELECT * FROM students WHERE id=?", (student_id,)).fetchone()
+    course = conn.execute("SELECT * FROM courses WHERE id=?", (course_id,)).fetchone()
+
     if not student:
         conn.close()
-        return templates.TemplateResponse("course_registration.html", {
-            "request": request,
-            "students": conn.execute("SELECT * FROM students").fetchall(),
-            "courses": conn.execute("SELECT * FROM courses").fetchall(),
-            "message": "❌ Student not found"
-        })
+        return RedirectResponse("/?message=Student not found", status_code=303)
 
-    # ✅ Validation: Check course
-    course = conn.execute("SELECT * FROM courses WHERE id=?", (course_id,)).fetchone()
     if not course:
         conn.close()
-        return templates.TemplateResponse("course_registration.html", {
-            "request": request,
-            "students": conn.execute("SELECT * FROM students").fetchall(),
-            "courses": conn.execute("SELECT * FROM courses").fetchall(),
-            "message": "❌ Course not found"
-        })
+        return RedirectResponse("/?message=Course not found", status_code=303)
 
-    # ✅ Prevent duplicate
     existing = conn.execute(
         "SELECT * FROM registrations WHERE student_id=? AND course_id=?",
         (student_id, course_id)
@@ -72,14 +56,8 @@ def register(request: Request, student_id: int = Form(...), course_id: int = For
 
     if existing:
         conn.close()
-        return templates.TemplateResponse("course_registration.html", {
-            "request": request,
-            "students": conn.execute("SELECT * FROM students").fetchall(),
-            "courses": conn.execute("SELECT * FROM courses").fetchall(),
-            "message": "⚠️ Already registered!"
-        })
+        return RedirectResponse("/?message=Already registered", status_code=303)
 
-    # ✅ Insert
     conn.execute(
         "INSERT INTO registrations (student_id, course_id) VALUES (?, ?)",
         (student_id, course_id)
@@ -90,7 +68,6 @@ def register(request: Request, student_id: int = Form(...), course_id: int = For
     return RedirectResponse("/", status_code=303)
 
 
-# 🔹 View Courses
 @app.get("/courses", response_class=HTMLResponse)
 def view_courses(request: Request):
     conn = get_db_connection()
@@ -103,7 +80,6 @@ def view_courses(request: Request):
     })
 
 
-# 🔹 View Registrations
 @app.get("/registrations", response_class=HTMLResponse)
 def view_registrations(request: Request):
     conn = get_db_connection()
@@ -121,69 +97,3 @@ def view_registrations(request: Request):
         "request": request,
         "registrations": data
     })
-=======
-from fastapi import FastAPI, Form, Request, HTTPException
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-import sqlite3
-
-app = FastAPI()
-DB_FILE = "courses.db"
-templates = Jinja2Templates(directory="templates")
-
-
-@app.get("/", response_class=HTMLResponse)
-def home(request: Request, message: str = None):
-    with sqlite3.connect(DB_FILE) as conn:
-        c = conn.cursor()
-        c.execute("SELECT id, name FROM students")
-        students = c.fetchall()
-        c.execute("SELECT id, course_name FROM courses")
-        courses = c.fetchall()
-    return templates.TemplateResponse(
-        "course_registration.html",
-        {"request": request, "students": students, "courses": courses, "message": message}
-    )
-
-
-@app.post("/register", response_class=HTMLResponse)
-def register_course(request: Request, student_id: int = Form(...), course_id: int = Form(...)):
-    with sqlite3.connect(DB_FILE) as conn:
-        c = conn.cursor()
-        # Validate student
-        c.execute("SELECT name FROM students WHERE id=?", (student_id,))
-        student = c.fetchone()
-        if not student:
-            return home(request, message="Error: Student not found")
-
-        # Validate course
-        c.execute("SELECT course_name FROM courses WHERE id=?", (course_id,))
-        course = c.fetchone()
-        if not course:
-            return home(request, message="Error: Course not found")
-
-        # Check duplicate
-        c.execute("SELECT * FROM registrations WHERE student_id=? AND course_id=?", (student_id, course_id))
-        if c.fetchone():
-            return home(request, message="Error: Already registered for this course")
-
-        # Insert registration
-        c.execute("INSERT INTO registrations(student_id, course_id) VALUES (?, ?)", (student_id, course_id))
-        conn.commit()
-
-    return home(request, message=f"Success: {student[0]} registered for {course[0]}")
-
-
-@app.get("/registrations", response_class=HTMLResponse)
-def view_registrations(request: Request):
-    with sqlite3.connect(DB_FILE) as conn:
-        c = conn.cursor()
-        c.execute('''
-            SELECT students.name, courses.course_name
-            FROM registrations
-            JOIN students ON registrations.student_id = students.id
-            JOIN courses ON registrations.course_id = courses.id
-        ''')
-        registrations = c.fetchall()
-    return templates.TemplateResponse("registrations.html", {"request": request, "registrations": registrations})
->>>>>>> origin/main
