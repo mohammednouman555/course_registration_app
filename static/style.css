@@ -1,4 +1,5 @@
 body {
+<<<<<<< HEAD
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #4facfe, #00f2fe);
     margin: 0;
@@ -113,3 +114,56 @@ tr:hover {
         transform: translateY(0);
     }
 }
+=======
+    font-family: Arial, sans-serif;
+    background: #f0f8ff;
+    text-align: center;
+    padding: 50px;
+}
+
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    display: inline-block;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+input, select {
+    padding: 8px;
+    margin: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+input[type="submit"] {
+    background: #333;
+    color: white;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background: #555;
+}
+
+.message {
+    font-weight: bold;
+    color: green;
+    margin-bottom: 15px;
+}
+
+table {
+    margin: 20px auto;
+    border-collapse: collapse;
+    width: 60%;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+>>>>>>> origin/main

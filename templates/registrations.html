@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrations</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>All Registrations</h2>
+    <table>
+        <tr>
+            <th>Student Name</th>
+            <th>Course Name</th>
+        </tr>
+        {% for reg in registrations %}
+        <tr>
+            <td>{{ reg[0] }}</td>
+            <td>{{ reg[1] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/">Back to Registration</a>
+</div>
+</body>
+</html>

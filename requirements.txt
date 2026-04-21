@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 fastapi
 uvicorn
 jinja2
+=======
+fastapi==0.111.1
+uvicorn==0.25.0
+>>>>>>> origin/main
