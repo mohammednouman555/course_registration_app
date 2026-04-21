@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Registration</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>📘 Course Registration</h1>
+
+    {% if message %}
+        <div class="message">{{ message }}</div>
+    {% endif %}
+
+    <form action="/register" method="post">
+
+        <label>👤 Select Student</label>
+        <select name="student_id" required>
+            {% for student in students %}
+                <option value="{{ student.id }}">
+                    {{ student.name }} (ID: {{ student.id }})
+                </option>
+            {% endfor %}
+        </select>
+
+        <label>📚 Select Course</label>
+        <select name="course_id" required>
+            {% for course in courses %}
+                <option value="{{ course.id }}">
+                    {{ course.course_name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">🚀 Register Now</button>
+    </form>
+
+    <div class="links">
+        <a href="/courses">📖 View Courses</a>
+        <a href="/registrations">📊 View Registrations</a>
+    </div>
+</div>
+
+</body>
+</html>

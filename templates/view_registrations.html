@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registrations</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>📊 Registered Students</h1>
+
+    <table>
+        <tr>
+            <th>Student</th>
+            <th>Course</th>
+        </tr>
+
+        {% for r in registrations %}
+        <tr>
+            <td>{{ r.name }}</td>
+            <td>{{ r.course_name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="links">
+        <a href="/">⬅ Back</a>
+    </div>
+</div>
+
+</body>
+</html>
